@@ -16,12 +16,11 @@ char valor;
 void setup() {
   pinMode(led, OUTPUT);
   digitalWrite(led, LOW);
-  delay(1000); //tiempo para encender el gprs y la alimetancion de la tarjeta
+  //delay(1000); //tiempo para encender el gprs y la alimetancion de la tarjeta
   SIM900.begin(19200); //velocidad del puerto serie del puerto SIM900
   Serial.begin(19200); //velocidad del puerto serie del puerto Arduino
-  delay(1000);
-  SIM900.println("ATE1");//activar eco
-  delay(1000);
+  //SIM900.println("ATE1");//activar eco
+  //delay(1000);
   SIM900.print("AT+CMGF=1\r"); //Configuración del módulo GSM en modo texto
   delay(1000);
   SIM900.println("AT+CNMI=2,2,0,0,0\r"); // El módulo enviará los mensaje directamente al puerto serial del dispositivo.
@@ -37,12 +36,12 @@ void loop() {
     while (SIM900.available() > 0) {
       //Serial.print((char)SIM900.read());
       valor = SIM900.read();
-      temp += valor; 
+      temp += valor;
     }
     Serial.println(temp);
-    digitalWrite(led, HIGH);
-    delay(5000);
-    digitalWrite(led, LOW);
+    //digitalWrite(led, HIGH);
+    //delay(5000);
+    //digitalWrite(led, LOW);
   }
 
   if (Serial.available() > 0) {
@@ -72,7 +71,7 @@ void enviar_mensaje() {
   SIM900.println("AT+CMGS=\"+573017182250\"");
   delay(1000);
   SIM900.println(mensaje);  // Texto del SMS
-  delay(100);
+  delay(1000);
   SIM900.println((char)26); //Comando de finalización ^Z
   delay(100);
   SIM900.println();
@@ -84,21 +83,22 @@ void enviar_mensaje() {
 void llamar() {
   Serial.println("Realizando llamada...");
   SIM900.println("ATD +573017182250;"); //comando AT para realizar una llamada
-  Serial.println("Imprimi en puerto ATD");
+  //Serial.println("Imprimi en puerto ATD");
   delay(30000); //espera de 30 seg mientras realiza la llamada
-  SIM900.println("ATH");
-  Serial.println("Imprimi en puerto ATH"); //cuelga la llamada
+  SIM900.println("ATH");//cuelga la llamada
+  //Serial.println("Imprimi en puerto ATH"); 
   delay(1000);
   Serial.println("Llamada finalizada");
-  SIM900.println();
+  //SIM900.println();
 }
 
 void hablarAlSim() {
   Serial.println("hablando al puerto sim...");
   SIM900.println("ATI4"); //mostrar configuracion del modem
+  delay(1000);
   if (SIM900.available() > 0) {
     while (SIM900.available() > 0) {
-      Serial.print(SIM900.read());
+      Serial.print((char)SIM900.read());
     }
     Serial.println(" ");
     Serial.println("Hay datos");
